@@ -4,10 +4,22 @@ module Accessors
       var_name = "@#{name}".to_sym
       define_method(name) { instance_variable_get(var_name) }
       define_method("#{name}=".to_sym) do |value|
-        value_history ||= []
         instance_variable_set(var_name, value)
-        value_history << value
+        @history ||= {}
+        @history[name] ||= []
+        @history[name] << value
       end
+
+      define_method("#{name}_history") { @history[name] }
+    end
+  end
+
+  def strong_attr_accessor(name, class_name)
+    var_name = "@#{name}".to_sym
+    define_method(name) { instance_variable_get(var_name) }
+    define_method("#{name}=".to_sym) do |value|
+      raise "Не совпадают классы!" unless value.is_a?(class_name)
+      instance_variable_set(var_name, value)
     end
   end
 end
