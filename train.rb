@@ -1,27 +1,23 @@
 # frozen_string_literal: true
 
 class Train
-  attr_reader :current_speed, :wagons, :current_station, :number, :type
   include Manufacturer
   include InstanceCounter
+  include Validation
   @@trains = {}
-
   NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
+  attr_reader :current_speed, :wagons, :current_station, :number, :type
+
+  validate :number, presence: true, format: NUMBER_FORMAT
 
   def initialize(number)
     @number = number
     validate!
+    validate_train_presence
     @wagons = []
     @current_speed = 0
     @@trains[number] = self
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def map_wagons
@@ -90,15 +86,6 @@ class Train
 
   def idle?
     return true if @current_speed.zero?
-  end
-
-  def validate!
-    validate_train_number
-    validate_train_presence
-  end
-
-  def validate_train_number
-    raise 'Неверный формат номера поезда' if @number !~ NUMBER_FORMAT
   end
 
   def validate_train_presence

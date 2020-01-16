@@ -1,25 +1,21 @@
 # frozen_string_literal: true
 
 class Station
-  attr_reader :name, :trains
   include InstanceCounter
+  include Validation
   @@stations = []
-
   NAME_FORMAT = /^[а-яa-z]+\s?[а-яa-z]*$/i.freeze
+  attr_reader :name, :trains
+
+  validate :name, presence: true, format: NAME_FORMAT
 
   def initialize(name)
     @name = name
     validate!
+    validate_station_presence
     @trains = []
     @@stations << self
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-    resсue
-    false
   end
 
   def self.all
@@ -45,15 +41,6 @@ class Station
   end
 
   protected
-
-  def validate!
-    validate_station_name
-    validate_station_presence
-  end
-
-  def validate_station_name
-    raise 'Неверный формат названия станции' if @name !~ NAME_FORMAT
-  end
 
   def validate_station_presence
     raise 'Станция с таким названием уже существует' if @@stations.map(&:name).include?(@name)

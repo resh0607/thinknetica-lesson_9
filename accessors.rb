@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Accessors
   def attr_accessors_with_history(*names)
     names.each do |name|
@@ -18,7 +20,8 @@ module Accessors
     var_name = "@#{name}".to_sym
     define_method(name) { instance_variable_get(var_name) }
     define_method("#{name}=".to_sym) do |value|
-      raise "Не совпадают классы!" unless value.is_a?(class_name)
+      raise 'Не совпадают классы!' unless value.is_a?(class_name)
+
       instance_variable_set(var_name, value)
     end
   end

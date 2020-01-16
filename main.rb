@@ -3,6 +3,8 @@
 require_relative 'menu'
 require_relative 'manufacturer'
 require_relative 'instance_counter'
+require_relative 'accessors'
+require_relative 'validation'
 require_relative 'train'
 require_relative 'train_cargo'
 require_relative 'train_pass'
